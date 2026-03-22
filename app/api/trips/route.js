@@ -1,9 +1,14 @@
 import sql from '@/db'
 import { NextResponse } from 'next/server'
+import { headers } from 'next/headers'
 
 export const dynamic = 'force-dynamic'
+export const revalidate = 0
 
 export async function GET() {
+  // Force dynamic rendering
+  headers()
+
   try {
     const rows = await sql`SELECT * FROM trips ORDER BY created_at DESC`
 

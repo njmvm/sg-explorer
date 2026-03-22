@@ -1,0 +1,21 @@
+{
+  "name": "SG Explorer",
+  "short_name": "SG Explorer",
+  "description": "A curated guide to activities, events, and weekend escapes in Singapore",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fafaf8",
+  "theme_color": "#2d6a4f",
+  "icons": [
+    {
+      "src": "/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}

@@ -2,6 +2,7 @@
 import { useState } from 'react'
 import { badgeColors } from '@/data/content'
 import EventModal from '@/components/EventModal'
+import { useSaved } from './SavedProvider'
 
 function makeGoogleCalUrl(event) {
   const base = 'https://calendar.google.com/calendar/render?action=TEMPLATE'
@@ -12,22 +13,31 @@ export default function EventRow({ event }) {
   const [open, setOpen] = useState(false)
   const badge = badgeColors[event.category] || 'bg-gray-100 text-gray-700'
   const isRecurring = event.tab === 'recurring'
+  const { isSaved } = useSaved()
+  const saved = isSaved('event', event.id)
 
   return (
     <>
       <div
         onClick={() => setOpen(true)}
-        className="flex flex-col sm:grid sm:grid-cols-[80px_1fr_auto] gap-3 sm:gap-4 sm:items-center bg-white border border-[#e8e8e4] rounded-card p-4 cursor-pointer hover:border-accent hover:shadow-card transition-all duration-150"
+        className="flex flex-col sm:grid sm:grid-cols-[80px_1fr_auto] gap-3 sm:gap-4 sm:items-center bg-white dark:bg-[#1e1e1c] border border-[#e8e8e4] dark:border-[#333330] rounded-card p-4 cursor-pointer hover:border-accent hover:shadow-card transition-all duration-150"
+        role="article"
+        tabIndex={0}
+        aria-label={`${event.title} - ${event.date.label} at ${event.location}`}
+        onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setOpen(true) } }}
       >
         <div className="flex sm:block items-center gap-3">
-          <div className="text-center bg-[#f0f0ec] rounded-[10px] py-2.5 px-3 sm:px-2 shrink-0 w-[72px] sm:w-auto">
+          <div className="text-center bg-[#f0f0ec] dark:bg-[#2a2a28] rounded-[10px] py-2.5 px-3 sm:px-2 shrink-0 w-[72px] sm:w-auto">
             <div className="text-[10px] font-bold uppercase tracking-widest text-accent">{event.date.month}</div>
-            <div className={`font-bold text-[#1a1a18] leading-tight ${isRecurring ? 'text-base mt-0.5' : 'text-2xl'}`}>
+            <div className={`font-bold text-[#1a1a18] dark:text-[#e0e0dc] leading-tight ${isRecurring ? 'text-base mt-0.5' : 'text-2xl'}`}>
               {event.date.day}
             </div>
           </div>
           <div className="sm:hidden flex-1 min-w-0">
-            <div className="text-[15px] font-semibold mb-1 truncate">{event.title}</div>
+            <div className="flex items-center gap-2 mb-1">
+              <div className="text-[15px] font-semibold truncate">{event.title}</div>
+              {saved && <span className="text-xs shrink-0">{'\u2764\uFE0F'}</span>}
+            </div>
             <div className="flex flex-wrap items-center gap-2 text-xs text-[#6b6b66]">
               <span>{'\uD83D\uDCCD'} {event.location}</span>
               <span className="text-xs font-medium text-accent">{event.price}</span>
@@ -35,7 +45,10 @@ export default function EventRow({ event }) {
           </div>
         </div>
         <div className="hidden sm:block">
-          <div className="text-[15px] font-semibold mb-1">{event.title}</div>
+          <div className="flex items-center gap-2 mb-1">
+            <div className="text-[15px] font-semibold">{event.title}</div>
+            {saved && <span className="text-xs">{'\u2764\uFE0F'}</span>}
+          </div>
           <div className="flex flex-wrap items-center gap-2.5 text-sm text-[#6b6b66]">
             <span>{'\uD83D\uDCCD'} {event.location}</span>
             <span>{'\uD83D\uDD50'} {event.time}</span>
@@ -45,7 +58,8 @@ export default function EventRow({ event }) {
         </div>
         <div className="flex sm:flex-col gap-2 sm:gap-1.5 sm:items-end">
           <a href={makeGoogleCalUrl(event)} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}
-            className="flex-1 sm:flex-none text-center text-xs font-semibold px-3 py-1.5 rounded-lg border-[1.5px] border-[#4285F4] text-[#4285F4] hover:bg-[#e8f0fe] transition-colors no-underline whitespace-nowrap">
+            className="flex-1 sm:flex-none text-center text-xs font-semibold px-3 py-1.5 rounded-lg border-[1.5px] border-[#4285F4] text-[#4285F4] hover:bg-[#e8f0fe] transition-colors no-underline whitespace-nowrap"
+            aria-label={`Add ${event.title} to Google Calendar`}>
             + Google
           </a>
           <button onClick={e => {
@@ -56,7 +70,8 @@ export default function EventRow({ event }) {
             const a = document.createElement('a')
             a.href = url; a.download = 'event.ics'; a.click()
             URL.revokeObjectURL(url)
-          }} className="flex-1 sm:flex-none text-xs font-semibold px-3 py-1.5 rounded-lg border-[1.5px] border-[#555] text-[#555] hover:bg-[#f5f5f5] transition-colors whitespace-nowrap cursor-pointer">
+          }} className="flex-1 sm:flex-none text-xs font-semibold px-3 py-1.5 rounded-lg border-[1.5px] border-[#555] text-[#555] dark:border-[#aaa] dark:text-[#aaa] hover:bg-[#f5f5f5] dark:hover:bg-[#333] transition-colors whitespace-nowrap cursor-pointer"
+            aria-label={`Download ${event.title} as iCal file`}>
             + Apple
           </button>
         </div>

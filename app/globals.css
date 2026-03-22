@@ -19,6 +19,76 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* ───── Dark mode overrides ───── */
+html.dark body {
+  background-color: #141413;
+  color: #e0e0dc;
+}
+
+html.dark .bg-white {
+  background-color: #1e1e1c !important;
+}
+
+html.dark .bg-\[\#fafaf8\] {
+  background-color: #141413 !important;
+}
+
+html.dark .bg-\[\#fafaf8\]\/90 {
+  background-color: rgba(20,20,19,0.9) !important;
+}
+
+html.dark .bg-\[\#fafaf8\]\/95 {
+  background-color: rgba(20,20,19,0.95) !important;
+}
+
+html.dark .bg-\[\#f0f0ec\] {
+  background-color: #2a2a28 !important;
+}
+
+html.dark .bg-\[\#f0f9f4\] {
+  background-color: #1a2e24 !important;
+}
+
+html.dark .border-\[\#e8e8e4\] {
+  border-color: #333330 !important;
+}
+
+html.dark .border-\[\#f0f0ec\] {
+  border-color: #2a2a28 !important;
+}
+
+html.dark .text-\[\#1a1a18\] {
+  color: #e0e0dc !important;
+}
+
+html.dark .text-\[\#6b6b66\] {
+  color: #a0a09b !important;
+}
+
+html.dark .hover\:bg-\[\#f0f0ec\]:hover {
+  background-color: #333330 !important;
+}
+
+html.dark .hover\:bg-\[\#e8e8e4\]:hover {
+  background-color: #3a3a38 !important;
+}
+
+html.dark .bg-accent-light {
+  background-color: #1a2e24 !important;
+}
+
+html.dark .bg-white\/90 {
+  background-color: rgba(30,30,28,0.9) !important;
+}
+
+html.dark .hover\:bg-\[\#fafaf8\]:hover {
+  background-color: #1e1e1c !important;
+}
+
+html.dark .border-\[\#d4edda\] {
+  border-color: #2d6a4f !important;
+}
+
 @layer components {
   .card-hover {
     @apply transition-all duration-200 hover:-translate-y-1 hover:shadow-card-hover;
@@ -61,8 +131,38 @@ body {
   animation: shimmer 1.5s infinite;
   border-radius: 8px;
 }
+html.dark .skeleton {
+  background: linear-gradient(90deg, #2a2a28 25%, #333330 50%, #2a2a28 75%);
+  background-size: 800px 100%;
+}
 
 /* Hero gradient */
 .hero-gradient {
   background: radial-gradient(ellipse at 50% 0%, rgba(45,106,79,0.08) 0%, transparent 60%);
 }
+
+/* ───── Page transition ───── */
+@keyframes pageEnter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.page-enter {
+  animation: pageEnter 0.35s ease-out;
+}
+
+/* ───── Social proof pulse ───── */
+@keyframes popularPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+.popular-badge {
+  animation: popularPulse 2s ease-in-out infinite;
+}
+
+/* ───── Focus styles for accessibility ───── */
+*:focus-visible {
+  outline: 2px solid #2d6a4f;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+

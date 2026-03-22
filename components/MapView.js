@@ -128,7 +128,7 @@ export default function MapView({ items, center, zoom = 12, regional = false }) 
   const usedCategories = [...new Set(items.map(i => i.category).filter(Boolean))]
 
   return (
-    <div className={`relative mb-8 rounded-xl overflow-hidden border border-[#e8e8e4] bg-[#f0f0ec] transition-all duration-300 ${expanded ? 'h-[460px]' : 'h-[200px]'}`}>
+    <div className={`map-wrapper relative mb-8 rounded-xl overflow-hidden border border-[#e8e8e4] bg-[#f0f0ec] transition-all duration-300 ${expanded ? 'h-[460px]' : 'h-[200px]'}`}>
       <div ref={mapRef} className="w-full h-full" />
 
       {showLegend && (

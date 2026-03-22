@@ -111,13 +111,10 @@ html.dark .border-\[\#d4edda\] {
   }
 }
 
-/* Leaflet z-index fix — keep popups above nav */
-.leaflet-pane {
-  z-index: 9999 !important;
-}
-.leaflet-top,
-.leaflet-bottom {
-  z-index: 10000 !important;
+/* Leaflet z-index fix — contained within map wrapper via isolation */
+.map-wrapper {
+  isolation: isolate;
+  z-index: 0;
 }
 
 /* Skeleton loading shimmer */

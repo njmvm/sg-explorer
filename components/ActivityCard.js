@@ -1,7 +1,7 @@
 'use client'
 import Image from 'next/image'
 import { useState } from 'react'
-import { badgeColors } from '@/data/content'
+import { badgeColors } from '@/data/constants'
 import ActivityModal from './ActivityModal'
 import { useSaved } from './SavedProvider'
 

@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { badgeColors } from '@/data/content'
+import { badgeColors } from '@/data/constants'
 import EventModal from '@/components/EventModal'
 import { useSaved } from './SavedProvider'
 

@@ -1,24 +1,53 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import { activities, badgeColors } from '@/data/content'
+import sql from '@/db'
+import { badgeColors } from '@/data/constants'
 import { notFound } from 'next/navigation'
 
-export function generateStaticParams() {
-  return activities.map(a => ({ slug: a.slug }))
-}
-
-export function generateMetadata({ params }) {
-  const activity = activities.find(a => a.slug === params.slug)
-  if (!activity) return {}
+function mapRow(row) {
   return {
-    title: `${activity.title} \u2014 SG Explorer`,
-    description: activity.shortDesc,
+    id: row.id,
+    slug: row.slug,
+    category: row.category,
+    title: row.title,
+    shortDesc: row.short_desc,
+    fullDesc: row.full_desc,
+    image: row.image,
+    location: row.location,
+    duration: row.duration,
+    price: row.price,
+    tags: row.tags || [],
+    lat: row.lat,
+    lng: row.lng,
+    website: row.website,
   }
 }
 
-export default function ActivityPage({ params }) {
-  const activity = activities.find(a => a.slug === params.slug)
-  if (!activity) notFound()
+export const dynamicParams = true
+
+export async function generateStaticParams() {
+  try {
+    const rows = await sql`SELECT slug FROM activities`
+    return rows.map(r => ({ slug: r.slug }))
+  } catch {
+    return []
+  }
+}
+
+export async function generateMetadata({ params }) {
+  const rows = await sql`SELECT title, short_desc FROM activities WHERE slug = ${params.slug} LIMIT 1`
+  if (rows.length === 0) return {}
+  return {
+    title: `${rows[0].title} \u2014 SG Explorer`,
+    description: rows[0].short_desc,
+  }
+}
+
+export default async function ActivityPage({ params }) {
+  const rows = await sql`SELECT * FROM activities WHERE slug = ${params.slug} LIMIT 1`
+  if (rows.length === 0) notFound()
+
+  const activity = mapRow(rows[0])
 
   const badge = badgeColors[activity.category] || 'bg-gray-100 text-gray-700'
 

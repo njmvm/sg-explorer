@@ -1,8 +1,8 @@
 'use client'
-import { useState, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import ActivityCard from '@/components/ActivityCard'
 import MapView from '@/components/MapView'
-import { activities, categories } from '@/data/content'
+import { categories } from '@/data/constants'
 
 const SORT_OPTIONS = [
   { id: 'default', label: 'Default' },
@@ -30,6 +30,15 @@ export default function ActivitiesPage() {
   const [sort, setSort] = useState('default')
   const [userLoc, setUserLoc] = useState(null)
   const [nearMe, setNearMe] = useState(false)
+  const [activities, setActivities] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetch('/api/activities').then(r => r.json()).then(data => {
+      setActivities(data)
+      setLoading(false)
+    }).catch(() => setLoading(false))
+  }, [])
 
   const filtered = useMemo(() => {
     let result = activities
@@ -126,7 +135,11 @@ export default function ActivitiesPage() {
         </div>
       </div>
 
-      {filtered.length === 0 ? (
+      {loading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {[1,2,3,4,5,6].map(i => <div key={i} className="skeleton h-[300px] rounded-xl" />)}
+        </div>
+      ) : filtered.length === 0 ? (
         <div className="text-center py-20">
           <div className="text-4xl mb-3">{'\uD83D\uDD0D'}</div>
           <p className="text-[#6b6b66]">No activities found {'\u2014'} try a different search or category!</p>

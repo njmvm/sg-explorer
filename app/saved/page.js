@@ -1,6 +1,6 @@
 'use client'
+import { useState, useEffect } from 'react'
 import { useSaved } from '@/components/SavedProvider'
-import { activities, events, trips } from '@/data/content'
 import ActivityCard from '@/components/ActivityCard'
 import EventRow from '@/components/EventRow'
 import TripCard from '@/components/TripCard'
@@ -8,8 +8,26 @@ import Link from 'next/link'
 
 export default function SavedPage() {
   const { saved, loaded } = useSaved()
+  const [activities, setActivities] = useState([])
+  const [events, setEvents] = useState([])
+  const [trips, setTrips] = useState([])
+  const [dataLoaded, setDataLoaded] = useState(false)
 
-  if (!loaded) return (
+  useEffect(() => {
+    if (!loaded) return
+    Promise.all([
+      fetch('/api/activities').then(r => r.json()),
+      fetch('/api/events').then(r => r.json()),
+      fetch('/api/trips').then(r => r.json()),
+    ]).then(([a, e, t]) => {
+      setActivities(a)
+      setEvents(e)
+      setTrips(t)
+      setDataLoaded(true)
+    }).catch(() => setDataLoaded(true))
+  }, [loaded])
+
+  if (!loaded || !dataLoaded) return (
     <div className="max-w-6xl mx-auto px-4 sm:px-8 py-12">
       <div className="skeleton h-8 w-48 mb-4" />
       <div className="skeleton h-4 w-64 mb-10" />

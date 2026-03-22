@@ -1,13 +1,30 @@
 'use client'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import ActivityCard from '@/components/ActivityCard'
 import EventRow from '@/components/EventRow'
 import TripCard from '@/components/TripCard'
-import { activities, events, trips, categories } from '@/data/content'
+import { categories } from '@/data/constants'
 
 export default function Home() {
   const [activeCat, setActiveCat] = useState('all')
+  const [activities, setActivities] = useState([])
+  const [events, setEvents] = useState([])
+  const [trips, setTrips] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    Promise.all([
+      fetch('/api/activities').then(r => r.json()),
+      fetch('/api/events').then(r => r.json()),
+      fetch('/api/trips').then(r => r.json()),
+    ]).then(([a, e, t]) => {
+      setActivities(a)
+      setEvents(e)
+      setTrips(t)
+      setLoading(false)
+    }).catch(() => setLoading(false))
+  }, [])
 
   const filtered = activeCat === 'all'
     ? activities
@@ -43,7 +60,11 @@ export default function Home() {
           <h2 className="text-[20px] sm:text-[22px] font-bold tracking-tight">Activities &amp; Places</h2>
           <Link href="/activities" className="text-sm font-medium text-accent hover:opacity-70 transition-opacity">View all {'\u2192'}</Link>
         </div>
-        {filtered.length === 0 ? (
+        {loading ? (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            {[1,2,3,4,5,6].map(i => <div key={i} className="skeleton h-[300px] rounded-xl" />)}
+          </div>
+        ) : filtered.length === 0 ? (
           <div className="text-center py-16">
             <div className="text-4xl mb-3">{'\uD83D\uDD0D'}</div>
             <p className="text-[#6b6b66]">No activities in this category yet {'\u2014'} check back soon!</p>

@@ -17,25 +17,20 @@ export default function SuggestPage() {
     e.preventDefault()
     setSending(true)
 
-    // Formspree endpoint — replace 'xyzformid' with your actual Formspree form ID
-    // Sign up free at https://formspree.io and create a form to get your ID
-    const FORMSPREE_ID = 'xyzformid'
-
     try {
-      const res = await fetch(`https://formspree.io/f/${FORMSPREE_ID}`, {
+      const res = await fetch('/api/submissions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           type,
           name,
           description,
-          url: url || '(not provided)',
-          email: email || '(not provided)',
+          url: url || null,
+          email: email || null,
         }),
       })
       if (res.ok) setSubmitted(true)
     } catch {
-      // Fallback: still show success since no backend is configured yet
       setSubmitted(true)
     }
     setSending(false)

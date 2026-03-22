@@ -1,7 +1,7 @@
 'use client'
 import Image from 'next/image'
 import { useEffect, useState, useRef } from 'react'
-import { badgeColors } from '@/data/content'
+import { badgeColors } from '@/data/constants'
 import ShareButtons from './ShareButtons'
 import { useSaved } from './SavedProvider'
 

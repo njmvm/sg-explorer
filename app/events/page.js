@@ -1,11 +1,11 @@
 'use client'
-import { useState, useMemo } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import Link from 'next/link'
 import EventRow from '@/components/EventRow'
 import EventModal from '@/components/EventModal'
 import MapView from '@/components/MapView'
 import CalendarView from '@/components/CalendarView'
-import { events, categories } from '@/data/content'
+import { categories } from '@/data/constants'
 
 const tabs = [
   { id: 'week',      label: 'This week' },
@@ -52,6 +52,15 @@ export default function EventsPage() {
   const [search, setSearch] = useState('')
   const [sort, setSort] = useState('default')
   const [hideExpired, setHideExpired] = useState(true)
+  const [events, setEvents] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    fetch('/api/events').then(r => r.json()).then(data => {
+      setEvents(data)
+      setLoading(false)
+    }).catch(() => setLoading(false))
+  }, [])
 
   const activeEvents = useMemo(() => {
     return hideExpired ? events.filter(e => !isExpired(e)) : events
@@ -178,7 +187,11 @@ export default function EventsPage() {
         ))}
       </div>
 
-      {viewMode === 'calendar' ? (
+      {loading ? (
+        <div className="flex flex-col gap-3">
+          {[1,2,3,4].map(i => <div key={i} className="skeleton h-[80px] rounded-xl" />)}
+        </div>
+      ) : viewMode === 'calendar' ? (
         <>
           <CalendarView events={mapItems} onEventClick={setCalendarEvent} />
           {calendarEvent && (

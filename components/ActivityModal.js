@@ -28,7 +28,6 @@ export default function ActivityModal({ activity, open, onClose }) {
             {'\u2715'}
           </button>
         </div>
-
         <div className="p-8">
           <span className={`badge ${badge} mb-3 inline-block`}>{activity.category}</span>
           <h2 className="text-[26px] font-bold tracking-tight mb-3">{activity.title}</h2>
@@ -43,9 +42,21 @@ export default function ActivityModal({ activity, open, onClose }) {
               <span key={tag} className="text-[11px] font-medium text-[#6b6b66] bg-[#f0f0ec] px-2.5 py-1 rounded-md">{tag}</span>
             ))}
           </div>
-          <div className="flex gap-3">
-            <button className="flex-1 py-3 px-5 bg-accent text-white rounded-[10px] text-sm font-semibold hover:bg-accent-hover transition-colors">Get directions {'\uD83D\uDCCD'}</button>
-            <button className="py-3 px-5 bg-[#f0f0ec] text-[#1a1a18] rounded-[10px] text-sm font-semibold hover:bg-[#e8e8e4] transition-colors">Save {'\u2661'}</button>
+          <div className="flex gap-3 flex-wrap">
+            {activity.website && (
+              <a href={activity.website} target="_blank" rel="noopener noreferrer"
+                className="flex-1 py-3 px-5 bg-accent text-white rounded-[10px] text-sm font-semibold hover:bg-accent-hover transition-colors no-underline text-center min-w-[140px]">
+                Official website {'\u2192'}
+              </a>
+            )}
+            <a href={`https://www.google.com/maps/search/${encodeURIComponent(activity.title + ' ' + activity.location)}`}
+              target="_blank" rel="noopener noreferrer"
+              className="py-3 px-5 bg-[#f0f0ec] text-[#1a1a18] rounded-[10px] text-sm font-semibold hover:bg-[#e8e8e4] transition-colors no-underline whitespace-nowrap">
+              {'\uD83D\uDCCD'} Directions
+            </a>
+            <button className="py-3 px-5 bg-[#f0f0ec] text-[#1a1a18] rounded-[10px] text-sm font-semibold hover:bg-[#e8e8e4] transition-colors">
+              Save {'\u2661'}
+            </button>
           </div>
         </div>
       </div>

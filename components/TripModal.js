@@ -35,8 +35,11 @@ export default function TripModal({ trip, open, onClose }) {
               <span className="text-white text-4xl font-bold">{trip.name}</span>
             </div>
           )}
-          <button onClick={onClose} className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center text-lg hover:bg-white transition-colors border-none cursor-pointer">
-            ✕
+          <button
+            onClick={onClose}
+            className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center text-lg hover:bg-white transition-colors border-none cursor-pointer"
+          >
+            {'\u2715'}
           </button>
         </div>
 
@@ -68,7 +71,7 @@ export default function TripModal({ trip, open, onClose }) {
               <div className="flex flex-col gap-2">
                 {trip.thingsToDo.map((item, i) => (
                   <div key={i} className="flex items-start gap-2.5 text-[14px] text-[#6b6b66]">
-                    <span className="text-accent mt-0.5 shrink-0">→</span>
+                    <span className="text-accent mt-0.5 shrink-0">{'\u2192'}</span>
                     <span>{item}</span>
                   </div>
                 ))}
@@ -77,8 +80,12 @@ export default function TripModal({ trip, open, onClose }) {
           )}
 
           <div className="flex gap-3">
-            <button className="flex-1 py-3 px-5 bg-accent text-white rounded-[10px] text-sm font-semibold hover:bg-accent-hover transition-colors">Plan this trip</button>
-            <button className="py-3 px-5 bg-[#f0f0ec] text-[#1a1a18] rounded-[10px] text-sm font-semibold hover:bg-[#e8e8e4] transition-colors">Save ♡</button>
+            <button className="flex-1 py-3 px-5 bg-accent text-white rounded-[10px] text-sm font-semibold hover:bg-accent-hover transition-colors">
+              Plan this trip
+            </button>
+            <button className="py-3 px-5 bg-[#f0f0ec] text-[#1a1a18] rounded-[10px] text-sm font-semibold hover:bg-[#e8e8e4] transition-colors">
+              Save {'\u2661'}
+            </button>
           </div>
         </div>
       </div>

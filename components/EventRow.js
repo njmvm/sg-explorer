@@ -28,8 +28,8 @@ export default function EventRow({ event }) {
         <div>
           <div className="text-[15px] font-semibold mb-1">{event.title}</div>
           <div className="flex flex-wrap items-center gap-2.5 text-sm text-[#6b6b66]">
-            <span>📍 {event.location}</span>
-            <span>🕐 {event.time}</span>
+            <span>{'\uD83D\uDCCD'} {event.location}</span>
+            <span>{'\uD83D\uDD50'} {event.time}</span>
             <span className={`badge ${badge}`}>{event.category}</span>
             <span className="text-xs font-medium text-accent">{event.price}</span>
           </div>

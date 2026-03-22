@@ -25,7 +25,7 @@ export default function ActivityModal({ activity, open, onClose }) {
             <Image src={activity.image} alt={activity.title} fill className="object-cover rounded-t-[18px]" sizes="680px" />
           </div>
           <button onClick={onClose} className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full w-9 h-9 flex items-center justify-center text-lg hover:bg-white transition-colors border-none cursor-pointer">
-            ✕
+            {'\u2715'}
           </button>
         </div>
 
@@ -33,9 +33,9 @@ export default function ActivityModal({ activity, open, onClose }) {
           <span className={`badge ${badge} mb-3 inline-block`}>{activity.category}</span>
           <h2 className="text-[26px] font-bold tracking-tight mb-3">{activity.title}</h2>
           <div className="flex flex-wrap gap-4 text-sm text-[#6b6b66] mb-5">
-            <span>📍 {activity.location}</span>
-            <span>⏱ {activity.duration}</span>
-            <span>💵 {activity.price}</span>
+            <span>{'\uD83D\uDCCD'} {activity.location}</span>
+            <span>{'\u23F1'} {activity.duration}</span>
+            <span>{'\uD83D\uDCB5'} {activity.price}</span>
           </div>
           <p className="text-[15px] text-[#6b6b66] leading-[1.7] mb-6">{activity.fullDesc}</p>
           <div className="flex gap-2 flex-wrap mb-6">
@@ -44,8 +44,8 @@ export default function ActivityModal({ activity, open, onClose }) {
             ))}
           </div>
           <div className="flex gap-3">
-            <button className="flex-1 py-3 px-5 bg-accent text-white rounded-[10px] text-sm font-semibold hover:bg-accent-hover transition-colors">Get directions 📍</button>
-            <button className="py-3 px-5 bg-[#f0f0ec] text-[#1a1a18] rounded-[10px] text-sm font-semibold hover:bg-[#e8e8e4] transition-colors">Save ♡</button>
+            <button className="flex-1 py-3 px-5 bg-accent text-white rounded-[10px] text-sm font-semibold hover:bg-accent-hover transition-colors">Get directions {'\uD83D\uDCCD'}</button>
+            <button className="py-3 px-5 bg-[#f0f0ec] text-[#1a1a18] rounded-[10px] text-sm font-semibold hover:bg-[#e8e8e4] transition-colors">Save {'\u2661'}</button>
           </div>
         </div>
       </div>

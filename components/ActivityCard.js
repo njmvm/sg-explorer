@@ -27,7 +27,7 @@ export default function ActivityCard({ activity }) {
                 <span key={tag} className="text-[11px] font-medium text-[#6b6b66] bg-[#f0f0ec] px-2 py-1 rounded-md">{tag}</span>
               ))}
             </div>
-            <span className="text-accent text-lg">→</span>
+            <span className="text-accent text-lg">{'\u2192'}</span>
           </div>
         </div>
       </div>

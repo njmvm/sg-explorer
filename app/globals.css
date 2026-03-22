@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #fafaf8;
+  color: #1a1a18;
+  font-family: 'Inter', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer components {
+  .card-hover {
+    @apply transition-all duration-200 hover:-translate-y-1 hover:shadow-card-hover;
+  }
+
+  .cat-pill {
+    @apply inline-flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium border border-[#e8e8e4] bg-white text-[#6b6b66] cursor-pointer transition-all duration-150 select-none;
+  }
+
+  .cat-pill:hover {
+    @apply border-accent text-accent;
+  }
+
+  .cat-pill.active {
+    @apply bg-accent text-white border-accent;
+  }
+
+  .badge {
+    @apply text-[11px] font-semibold tracking-wide uppercase px-2.5 py-1 rounded-full;
+  }
+}

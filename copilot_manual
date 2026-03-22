@@ -1,0 +1,407 @@
+# SG Explorer — GitHub Copilot Developer Manual
+ 
+> Hand this entire document to GitHub Copilot as context before asking it to make any changes to the project.
+ 
+---
+ 
+## 1. Project Overview
+ 
+**SG Explorer** is a curated "things to do in Singapore" web app targeting people in their late 20s. It lists activities, upcoming events, and weekend trip destinations, and is **automatically updated every Monday and Wednesday** by an AI agent (Claude Cowork scheduled task) that adds new content to the data file and pushes it to GitHub.
+ 
+- **Live site:** https://sg-explorer.vercel.app
+- **GitHub repo:** https://github.com/njmvm/sg-explorer
+- **Local path (Windows):** `C:\Users\mouge\sg-explorer\`
+- **Deployment:** Vercel — auto-deploys on every push to `main`
+- **Framework:** Next.js 14 App Router, JavaScript (not TypeScript)
+- **Styling:** Tailwind CSS (utility classes only — no custom config beyond what's in `tailwind.config.js`)
+- **Images:** Unsplash (no account needed, direct photo URLs)
+- **Map:** Leaflet.js + OpenStreetMap tiles (loaded from CDN, no API key needed)
+ 
+---
+ 
+## 2. Repository Structure
+ 
+```
+sg-explorer/
+├── app/
+│   ├── globals.css           # Global styles, Tailwind base, custom CSS vars
+│   ├── layout.js             # Root layout: <html>, <head>, Nav, footer
+│   ├── page.js               # Home page (hero + featured activities + upcoming events strip)
+│   ├── activities/
+│   │   └── page.js           # Activities page with category filter + Leaflet map
+│   ├── events/
+│   │   └── page.js           # Events page with tabs (week/month/recurring), calendar toggle, map
+│   └── trips/
+│       └── page.js           # Weekend trips page grouped by transport + regional map
+│
+├── components/
+│   ├── Nav.js                # Top navigation bar
+│   ├── ActivityCard.js       # Card shown in the activities grid
+│   ├── ActivityModal.js      # Full-screen modal for an activity (with website + directions links)
+│   ├── EventRow.js           # Row shown in the events list (with Google + Apple calendar buttons)
+│   ├── EventModal.js         # Full-screen modal for an event
+│   ├── TripCard.js           # Card shown in the trips grid
+│   ├── TripModal.js          # Full-screen modal for a trip destination
+│   ├── MapView.js            # Reusable Leaflet map (small by default, expandable)
+│   └── CalendarView.js       # Month calendar view for events page
+│
+├── data/
+│   └── content.js            # ⚠️ SINGLE SOURCE OF TRUTH — all activities, events, trips data
+│
+├── public/                   # Static assets
+├── package.json
+├── tailwind.config.js
+└── next.config.js
+```
+ 
+---
+ 
+## 3. The Data File — `data/content.js` (CRITICAL)
+ 
+This is the most important file in the project. **The automated AI agent reads and writes only this file.** It exports five named constants:
+ 
+```js
+export const categories   // filter categories — do NOT rename or reorder
+export const badgeColors  // category → Tailwind class map — do NOT modify
+export const activities   // array of activity objects
+export const events       // array of event objects
+export const trips        // array of trip objects
+```
+ 
+### 3a. Activity Object Schema
+ 
+Every activity object **must** include all these fields (the AI agent writes them all):
+ 
+```js
+{
+  id: 'karting',                     // unique kebab-case string
+  slug: 'go-karting-kf1',            // URL-friendly slug
+  category: 'sports',                // see categories list below
+  title: 'Go-Karting at KF1',
+  shortDesc: 'One sentence shown on the card.',
+  fullDesc: 'Two to three sentences shown in the modal.',
+  image: 'https://images.unsplash.com/photo-XXXXXXXXX?w=800&h=500&fit=crop&q=80',
+  location: 'Buona Vista, Singapore',
+  duration: '~2 hours',
+  price: '~S$35/session',
+  tags: ['Friends', 'Birthday', 'Competitive'],
+  lat: 1.3068,       // Singapore latitude (always between 1.20–1.47)
+  lng: 103.7912,     // Singapore longitude (always between 103.60–104.00)
+  website: 'https://www.kf1.com.sg',  // official website URL
+}
+```
+ 
+### 3b. Event Object Schema
+ 
+```js
+{
+  id: 'e1',
+  category: 'nightlife',
+  title: 'Zouk \u2014 Techno Night',          // use \u2014 for em dash
+  location: 'Zouk Singapore, Clarke Quay',
+  time: '10 PM \u2013 late',                  // use \u2013 for en dash
+  date: {
+    month: 'APR',       // 3-letter uppercase month abbreviation
+    day: '25',          // day number as string, OR 'SAT' for recurring
+    label: 'Sat 25 Apr 2026',  // human-readable, ALWAYS include 4-digit year
+  },
+  tab: 'week',          // 'week' | 'month' | 'recurring'
+  price: '~S$30',
+  image: 'https://images.unsplash.com/photo-XXXXXXXXX?w=800&h=500&fit=crop&q=80',
+  fullDesc: 'Two to three sentences.',
+  tags: ['Clubbing', 'Techno'],
+  lat: 1.2887,
+  lng: 103.8467,
+  website: 'https://www.zoukclub.com',
+}
+```
+ 
+For **recurring events**, use:
+```js
+date: { month: 'EVERY', day: 'SAT', label: 'Every Saturday' },
+tab: 'recurring',
+```
+ 
+### 3c. Trip Object Schema
+ 
+```js
+{
+  id: 'batam',
+  name: 'Batam, Indonesia',
+  meta: 'Golf \u00B7 Spas \u00B7 Seafood',    // \u00B7 = middle dot separator
+  transport: '\uD83D\uDEA4 1h ferry',           // MUST contain 'ferry', 'drive', or 'flight'
+  image: 'https://images.unsplash.com/photo-XXXXXXXXX?w=800&h=600&fit=crop&q=80',
+  vibe: 'One evocative sentence.',
+  description: 'Two sentences of context.',
+  gettingThere: 'How to reach from Singapore.',
+  thingsToDo: [
+    'Nagoya Hill \u2014 bargain shopping',      // \u2014 = em dash
+    'Seafood at Golden Prawn \u2014 amazing',
+  ],
+  lat: 1.0456,       // destination coordinates (NOT Singapore)
+  lng: 104.0305,
+  website: 'https://www.batamfast.com',
+}
+```
+ 
+### 3d. Valid Categories
+ 
+```
+sports | nightlife | food | nature | culture | social | travel
+```
+ 
+The `travel` category is used for weekend trips filter only. Activities and events use the other six.
+ 
+---
+ 
+## 4. ⚠️ CRITICAL: Unicode Encoding Rules
+ 
+**The data file MUST be pure ASCII.** No raw emoji or special characters are allowed — they cause garbled rendering when written on Windows systems.
+ 
+**Always use JavaScript Unicode escape sequences inside string literals:**
+ 
+| Character | Escape | Usage |
+|-----------|--------|-------|
+| → | `\u2192` | arrows, "View all →" |
+| — | `\u2014` | em dash in titles and descriptions |
+| – | `\u2013` | en dash in ranges ("10 PM – late") |
+| · | `\u00B7` | separator in trip meta fields |
+| ♡ | `\u2661` | Save button heart |
+| ✕ | `\u2715` | Modal close button |
+| 🇸🇬 | `\uD83C\uDDF8\uD83C\uDDEC` | Singapore flag |
+| 🚤 | `\uD83D\uDEA4` | ferry transport |
+| 🚗 | `\uD83D\uDE97` | car/drive transport |
+| ✈️ | `\u2708\uFE0F` | plane transport |
+| 📍 | `\uD83D\uDCCD` | location pin |
+| 💵 | `\uD83D\uDCB5` | price/money |
+| ⏱ | `\u23F1` | duration/time |
+| 📅 | `\uD83D\uDCC5` | calendar date |
+| 🕐 | `\uD83D\uDD50` | clock/time |
+| 🏋️ | `\uD83C\uDFCB\uFE0F` | sports/gym |
+| 🍸 | `\uD83C\uDF78` | nightlife/cocktail |
+| 🍜 | `\uD83C\uDF5C` | food |
+| 🌿 | `\uD83C\uDF3F` | nature |
+| 🎨 | `\uD83C\uDFA8` | culture/art |
+| 🤝 | `\uD83E\uDD1D` | community/social |
+| ✦ | `\u2726` | sparkle (used in "All" category icon) |
+| 🤖 | `\uD83E\uDD16` | robot (AI agent badge) |
+| 🏃 | `\uD83C\uDFC3` | running |
+| 🎵 | `\uD83C\uDFB5` | music |
+ 
+**In JSX**, wrap escapes in curly braces: `{'\u2192'}` or `{'\uD83D\uDEA4'}`
+**In JS string values** (inside data objects), use them directly: `'transport \u2014 description'`
+ 
+---
+ 
+## 5. Component Reference
+ 
+### `MapView.js`
+- **Props:** `items` (array of activity/event/trip objects with `lat`/`lng`), `center` (optional `[lat, lng]`), `zoom` (default 12), `regional` (boolean, default false)
+- **Behavior:** Loads Leaflet from CDN (`unpkg.com/leaflet@1.9.4`), renders a small map (200px), expands to 460px via "Expand map" button
+- **Color coding:** Each category has a fixed dot color (blue=sports, purple=nightlife, amber=food, etc.)
+- **Important:** Uses `scrollWheelZoom: false` to prevent scroll hijacking
+- **SSR safe:** Uses `useEffect` for all Leaflet initialization — never calls `window.L` during SSR
+ 
+### `CalendarView.js`
+- **Props:** `events` (array), `onEventClick` (callback with event object)
+- **Behavior:** Month calendar with prev/next navigation. Recurring events appear on every matching weekday. Clicking an event chip calls `onEventClick`.
+- **Date matching:** Uses `MONTH_MAP` for `date.month` → 0-indexed month, and `DAY_MAP` for recurring day names
+ 
+### `ActivityModal.js` / `EventModal.js` / `TripModal.js`
+- All are client components with `open` + `onClose` props
+- Show `website` link as primary CTA button ("Official website →" / "Event website →" / "Plan this trip →")
+- ActivityModal shows a Google Maps directions link
+- EventModal shows Google Calendar + Apple Calendar (.ics) export
+- Close button uses `\u2715` (✕), Save button uses `\u2661` (♡)
+ 
+### `EventRow.js`
+- Shows event in list format with date box, title, location, time
+- Has inline Google Calendar + Apple Calendar buttons (no modal needed to add to calendar)
+ 
+---
+ 
+## 6. The Automated Update System
+ 
+An AI agent (Claude Cowork scheduled task) runs **every Monday and Wednesday at 9 AM** and:
+ 
+1. Reads `data/content.js` using PowerShell `Get-Content`
+2. Adds 2–3 new activities, 3–5 new events, and optionally 1 new trip
+3. Writes the updated file back using Desktop Commander
+4. Runs `git add data/content.js && git commit && git push origin main`
+5. Vercel auto-deploys within ~1 minute
+ 
+**What the agent depends on (DO NOT break these contracts):**
+ 
+- The five named exports from `data/content.js` must keep their exact names: `categories`, `badgeColors`, `activities`, `events`, `trips`
+- The `tab` field on events must be exactly `'week'`, `'month'`, or `'recurring'` — the events page filter uses this
+- The `transport` field on trips must contain the exact word `'ferry'`, `'drive'`, or `'flight'` — the trips page uses `.includes()` to filter into sections
+- The `lat` and `lng` fields must be present on all items for the map to show markers
+- The `website` field must be present for the modal CTA button to appear
+- The file must remain pure ASCII — no raw emoji, only `\uXXXX` escapes
+ 
+---
+ 
+## 7. Pages Reference
+ 
+### `app/page.js` — Home
+- Hero section with Singapore flag badge, headline, category filter pills
+- "Activities & Places" section with first 6 activities
+- "Upcoming Events" strip with first 4 week/month events
+- "Weekend Escapes" section with first 4 trips
+ 
+### `app/activities/page.js` — Activities
+- MapView at top (filters to match active category)
+- Category filter pills (from `categories` array, excluding 'travel')
+- Grid of ActivityCard components
+ 
+### `app/events/page.js` — Events
+- MapView at top
+- Tab bar: "This week" | "This month" | "Recurring"
+- List/Calendar toggle (☰ List | 📅 Calendar)
+- Category filter pills
+- In list mode: EventRow components
+- In calendar mode: CalendarView component (all events, ignores tab filter)
+ 
+### `app/trips/page.js` — Weekend Trips
+- MapView with `regional={true}`, `zoom={5}`, `center={[3.5, 108.0]}` (Southeast Asia view)
+- Three sections: By Ferry / By Car / By Plane (filtered from `allTrips` by transport keyword)
+- `allTrips` = spread of `trips` from content.js + 4 additional trips hardcoded in the page (Melaka, Tioman, KL, Langkawi)
+ 
+---
+ 
+## 8. Styling Notes
+ 
+- **Color palette** (defined in `globals.css` or `tailwind.config.js`):
+  - `accent` = primary green (#2d6a4f or similar)
+  - `accent-hover` = darker green
+  - `accent-light` = light green background for info banners
+- **Typography:** System font stack, tight tracking
+- **Border radius:** Cards use `rounded-card` (custom class), modals use `rounded-[18px]`
+- **Card hover:** `card-hover` custom class adds subtle shadow and lift
+- **Z-index layers:** Modals at `z-50`, Leaflet map controls at `z-[1000]` (important — don't use z-50+ on nav or overlays that should appear over the map)
+ 
+---
+ 
+## 9. Planned Improvements (Your Roadmap)
+ 
+Here are the features to implement, in suggested order:
+ 
+### 9a. Mobile Responsiveness (iOS & Android)
+- The current layout uses `px-8` padding which may be too tight on small screens — use `px-4 sm:px-8`
+- Activity/trip grids: `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3` (activities already done)
+- The events tab bar overflows on small screens — wrap or use a scrollable row
+- Category filter pills need `overflow-x-auto` wrapping on mobile
+- The EventRow grid (`grid-cols-[80px_1fr_auto]`) breaks on very small screens — collapse to a simpler layout under `sm:`
+- The MapView default height (200px) is fine on mobile; ensure the "Expand map" button is always accessible
+- Modals need `p-4 sm:p-8` for comfortable mobile padding
+- Test viewport meta tag in `app/layout.js`: ensure `<meta name="viewport" content="width=device-width, initial-scale=1" />` is present
+ 
+### 9b. Overall Design Improvements
+- Consider a sticky/floating nav that hides on scroll down and shows on scroll up
+- Add a subtle background texture or gradient to the hero section
+- Improve the "This week" / "This month" tabs with event count badges
+- Add skeleton loading states for cards
+- Improve the empty state illustrations (currently just text)
+- Add smooth page transitions using Next.js `<Link>` prefetching
+ 
+### 9c. Map Design Improvements
+- Replace the default Leaflet markers with styled SVG pins matching the site's green palette
+- Add a map legend showing category color coding
+- Consider clustering markers when zoomed out (Leaflet.markercluster plugin)
+- Add a "Locate me" button using `navigator.geolocation`
+- The Trips map could show curved flight paths between Singapore and destinations
+ 
+### 9d. Bug Fixes to Address
+- **Leaflet CSS z-index conflict:** The Leaflet popup sometimes appears behind the nav bar — add `z-index: 9999` to `.leaflet-pane` in globals.css
+- **Image fallback:** If an Unsplash image 404s, cards show a broken image icon — add `onError` handler to Next.js `<Image>` components to fall back to a placeholder
+- **Calendar recurring event overflow:** On small screens, the calendar day cells clip event chips — add `overflow-hidden` and a tooltip or "+N more" pattern
+- **Trips page is not a client component** but uses `allTrips` array with hardcoded data — if you add `useState` or interactivity, add `'use client'` at the top
+ 
+### 9e. Comment Section
+Suggested approach for a lightweight comment system (no backend needed):
+- Use **Giscus** (https://giscus.app) — free, GitHub Discussions-powered, no database
+- Or **Disqus** embedded widget
+- Or a simple Supabase table with anonymous comments (requires Supabase account)
+- The comment section should appear at the bottom of each modal (ActivityModal, EventModal, TripModal)
+- Consider a "Was this helpful? 👍 👎" rating as a simpler first step
+ 
+### 9f. Contact / Submission Section
+A form where users can suggest events, activities, trips, or report bugs:
+- Add a `/suggest` route or a modal triggered from the existing "Submit an event →" link in the events page info banner
+- Form fields: Type (Event / Activity / Trip / Bug), Name/title, Description, URL (optional), Your email (optional)
+- Backend options (no server needed):
+  - **Formspree** (https://formspree.io) — free tier, form submissions via fetch to their API
+  - **EmailJS** — sends form submissions to your email
+  - **Supabase** — stores in a database
+- The AI agent's scheduled task currently ignores user submissions — if you use Supabase, you could later train the agent to check the submissions table and include verified suggestions
+ 
+---
+ 
+## 10. Key Constraints When Adding Features
+ 
+1. **Never rename or remove the five exports from `data/content.js`** — the agent writes to this file by reading its structure
+2. **Never change the `tab` field values** for events (`'week'`, `'month'`, `'recurring'`) — the filter logic in `app/events/page.js` depends on exact string matching
+3. **Never change the transport field keywords** (`'ferry'`, `'drive'`, `'flight'`) — the trips page filters use `.includes()`
+4. **Keep `data/content.js` as pure JavaScript** (no TypeScript, no JSX, no imports) — the agent writes it as a plain `.js` file
+5. **Avoid installing npm packages that require native binaries** — Vercel's build environment is limited; stick to pure JS/React libraries
+6. **The Leaflet map is loaded from CDN** — do not try to `npm install leaflet` as it will cause SSR issues. The current CDN approach in `MapView.js` is the correct pattern for Next.js App Router
+7. **All `'use client'` components that use `window` or browser APIs** must be dynamically imported or wrapped in `useEffect` — the App Router runs components on the server by default
+ 
+---
+ 
+## 11. Git Workflow
+ 
+```bash
+# The agent uses these exact commands to push:
+git add data/content.js
+git commit -m "Weekly content update: add new activities and events YYYY-MM-DD"
+git push origin main
+ 
+# For your own changes, use standard flow:
+git add .
+git commit -m "Your change description"
+git push origin main
+```
+ 
+Vercel deploys automatically within ~60 seconds of a push to `main`. No manual deployment needed.
+ 
+---
+ 
+## 12. Environment & Configuration
+ 
+- No `.env` file needed currently — no API keys required (Unsplash direct URLs, OpenStreetMap free tiles)
+- If you add Google Maps, Supabase, Formspree, or other services, create `.env.local` and add the key names to Vercel's Environment Variables dashboard
+- `next.config.js` should include Unsplash in the `images.domains` list if not already present:
+ 
+```js
+// next.config.js
+const nextConfig = {
+  images: {
+    domains: ['images.unsplash.com'],
+  },
+}
+module.exports = nextConfig
+```
+ 
+---
+ 
+## 13. Quick Reference — File to Edit for Common Tasks
+ 
+| Task | File(s) to edit |
+|------|----------------|
+| Add/edit an activity | `data/content.js` → `activities` array |
+| Add/edit an event | `data/content.js` → `events` array |
+| Add/edit a trip | `data/content.js` → `trips` array + optionally `app/trips/page.js` |
+| Change card design | `components/ActivityCard.js`, `components/TripCard.js` |
+| Change modal design | `components/ActivityModal.js`, `components/EventModal.js`, `components/TripModal.js` |
+| Change map appearance | `components/MapView.js` |
+| Change calendar appearance | `components/CalendarView.js` |
+| Change events page layout | `app/events/page.js` |
+| Change nav | `components/Nav.js` |
+| Change global styles | `app/globals.css` |
+| Change site metadata | `app/layout.js` |
+| Add a new page | Create `app/[pagename]/page.js` |
+ 
+---
+ 
+*This document was generated by Claude Cowork on 22 March 2026. It reflects the exact state of the codebase after the map, calendar, and website-links update. Keep this file updated as you make significant architectural changes.*

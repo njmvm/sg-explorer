@@ -6,6 +6,7 @@ import ActivityModal from './ActivityModal'
 
 export default function ActivityCard({ activity }) {
   const [open, setOpen] = useState(false)
+  const [imgError, setImgError] = useState(false)
   const badge = badgeColors[activity.category] || 'bg-gray-100 text-gray-700'
 
   return (
@@ -15,7 +16,13 @@ export default function ActivityCard({ activity }) {
         className="bg-white rounded-card border border-[#e8e8e4] overflow-hidden cursor-pointer card-hover flex flex-col"
       >
         <div className="relative h-[200px] w-full">
-          <Image src={activity.image} alt={activity.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
+          {imgError ? (
+            <div className="w-full h-full bg-gradient-to-br from-[#2d6a4f] to-[#40916c] flex items-center justify-center">
+              <span className="text-white/80 text-4xl">{'\uD83C\uDFA8'}</span>
+            </div>
+          ) : (
+            <Image src={activity.image} alt={activity.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" onError={() => setImgError(true)} />
+          )}
         </div>
         <div className="p-4 flex flex-col flex-1">
           <span className={`badge ${badge} self-start mb-2`}>{activity.category}</span>

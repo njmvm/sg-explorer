@@ -2,8 +2,13 @@ import './globals.css'
 import Nav from '@/components/Nav'
 
 export const metadata = {
-  title: 'SG Explorer — Things to do in Singapore',
+  title: 'SG Explorer \u2014 Things to do in Singapore',
   description: 'A curated guide to activities, events, and weekend escapes in Singapore for people in their late 20s.',
+}
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
 }
 
 export default function RootLayout({ children }) {
@@ -13,12 +18,12 @@ export default function RootLayout({ children }) {
         <Nav />
         <main>{children}</main>
         <footer className="bg-[#1a1a18] text-white/60 py-12 mt-20">
-          <div className="max-w-6xl mx-auto px-8 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <div className="max-w-6xl mx-auto px-4 sm:px-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-center sm:text-left">
             <div>
               <span className="text-white font-bold text-lg">SG<span className="text-[#74c69d]">.</span>explorer</span>
-              <p className="text-sm mt-1">Updated weekly by an AI agent · Built for Singapore&apos;s late-20s crowd</p>
+              <p className="text-sm mt-1">Updated weekly by an AI agent &middot; Built for Singapore&apos;s late-20s crowd</p>
             </div>
-            <p className="text-sm">Made with ♥ in Singapore</p>
+            <p className="text-sm">Made with {'\u2665'} in Singapore</p>
           </div>
         </footer>
       </body>

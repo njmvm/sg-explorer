@@ -56,15 +56,19 @@ export default function CalendarView({ events, onEventClick }) {
           return (
             <div key={day} className={`min-h-[88px] p-1 ${i % 7 !== 6 ? 'border-r' : ''} border-b border-[#f0f0ec] hover:bg-[#fafaf8]`}>
               <div className={`text-[12px] font-semibold w-6 h-6 flex items-center justify-center rounded-full mb-0.5 ${isToday ? 'bg-accent text-white' : 'text-[#1a1a18]'}`}>{day}</div>
-              <div className="flex flex-col gap-0.5">
-                {evs.slice(0, 3).map(e => (
+              <div className="flex flex-col gap-0.5 overflow-hidden">
+                {evs.slice(0, 2).map(e => (
                   <button key={e.id} onClick={() => onEventClick(e)}
                     style={{ background: BG[e.category]||'#f0f0ec', color: FG[e.category]||'#1a1a18' }}
-                    className="text-[9px] font-semibold px-1 py-0.5 rounded truncate text-left w-full leading-tight cursor-pointer hover:opacity-80">
+                    className="text-[9px] font-semibold px-1 py-0.5 rounded truncate text-left w-full leading-tight cursor-pointer hover:opacity-80" title={e.title}>
                     {e.title}
                   </button>
                 ))}
-                {evs.length > 3 && <div className="text-[9px] text-[#6b6b66] px-1">+{evs.length - 3} more</div>}
+                {evs.length > 2 && (
+                  <button onClick={() => onEventClick(evs[2])} className="text-[9px] text-accent font-semibold px-1 cursor-pointer hover:underline text-left">
+                    +{evs.length - 2} more
+                  </button>
+                )}
               </div>
             </div>
           )

@@ -17,15 +17,24 @@ export default function EventRow({ event }) {
     <>
       <div
         onClick={() => setOpen(true)}
-        className="grid grid-cols-[80px_1fr_auto] gap-4 items-center bg-white border border-[#e8e8e4] rounded-card p-4 cursor-pointer hover:border-accent hover:shadow-card transition-all duration-150"
+        className="flex flex-col sm:grid sm:grid-cols-[80px_1fr_auto] gap-3 sm:gap-4 sm:items-center bg-white border border-[#e8e8e4] rounded-card p-4 cursor-pointer hover:border-accent hover:shadow-card transition-all duration-150"
       >
-        <div className="text-center bg-[#f0f0ec] rounded-[10px] py-2.5 px-2">
-          <div className="text-[10px] font-bold uppercase tracking-widest text-accent">{event.date.month}</div>
-          <div className={`font-bold text-[#1a1a18] leading-tight ${isRecurring ? 'text-base mt-0.5' : 'text-2xl'}`}>
-            {event.date.day}
+        <div className="flex sm:block items-center gap-3">
+          <div className="text-center bg-[#f0f0ec] rounded-[10px] py-2.5 px-3 sm:px-2 shrink-0 w-[72px] sm:w-auto">
+            <div className="text-[10px] font-bold uppercase tracking-widest text-accent">{event.date.month}</div>
+            <div className={`font-bold text-[#1a1a18] leading-tight ${isRecurring ? 'text-base mt-0.5' : 'text-2xl'}`}>
+              {event.date.day}
+            </div>
+          </div>
+          <div className="sm:hidden flex-1 min-w-0">
+            <div className="text-[15px] font-semibold mb-1 truncate">{event.title}</div>
+            <div className="flex flex-wrap items-center gap-2 text-xs text-[#6b6b66]">
+              <span>{'\uD83D\uDCCD'} {event.location}</span>
+              <span className="text-xs font-medium text-accent">{event.price}</span>
+            </div>
           </div>
         </div>
-        <div>
+        <div className="hidden sm:block">
           <div className="text-[15px] font-semibold mb-1">{event.title}</div>
           <div className="flex flex-wrap items-center gap-2.5 text-sm text-[#6b6b66]">
             <span>{'\uD83D\uDCCD'} {event.location}</span>
@@ -34,9 +43,9 @@ export default function EventRow({ event }) {
             <span className="text-xs font-medium text-accent">{event.price}</span>
           </div>
         </div>
-        <div className="flex flex-col gap-1.5 items-end">
+        <div className="flex sm:flex-col gap-2 sm:gap-1.5 sm:items-end">
           <a href={makeGoogleCalUrl(event)} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()}
-            className="text-xs font-semibold px-3 py-1.5 rounded-lg border-[1.5px] border-[#4285F4] text-[#4285F4] hover:bg-[#e8f0fe] transition-colors no-underline whitespace-nowrap">
+            className="flex-1 sm:flex-none text-center text-xs font-semibold px-3 py-1.5 rounded-lg border-[1.5px] border-[#4285F4] text-[#4285F4] hover:bg-[#e8f0fe] transition-colors no-underline whitespace-nowrap">
             + Google
           </a>
           <button onClick={e => {
@@ -47,7 +56,7 @@ export default function EventRow({ event }) {
             const a = document.createElement('a')
             a.href = url; a.download = 'event.ics'; a.click()
             URL.revokeObjectURL(url)
-          }} className="text-xs font-semibold px-3 py-1.5 rounded-lg border-[1.5px] border-[#555] text-[#555] hover:bg-[#f5f5f5] transition-colors whitespace-nowrap">
+          }} className="flex-1 sm:flex-none text-xs font-semibold px-3 py-1.5 rounded-lg border-[1.5px] border-[#555] text-[#555] hover:bg-[#f5f5f5] transition-colors whitespace-nowrap cursor-pointer">
             + Apple
           </button>
         </div>

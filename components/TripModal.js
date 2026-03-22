@@ -1,8 +1,11 @@
 'use client'
 import Image from 'next/image'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 export default function TripModal({ trip, open, onClose }) {
+  const [imgError, setImgError] = useState(false)
+  const [helpful, setHelpful] = useState(null)
+
   useEffect(() => {
     if (open) document.body.style.overflow = 'hidden'
     else document.body.style.overflow = ''
@@ -13,21 +16,21 @@ export default function TripModal({ trip, open, onClose }) {
 
   return (
     <div
-      className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-6"
+      className="fixed inset-0 bg-black/40 z-50 flex items-end sm:items-center justify-center p-0 sm:p-6"
       onClick={e => { if (e.target === e.currentTarget) onClose() }}
     >
-      <div className="bg-white rounded-[18px] max-w-[680px] w-full max-h-[90vh] overflow-y-auto shadow-2xl">
+      <div className="bg-white rounded-t-[18px] sm:rounded-[18px] max-w-[680px] w-full max-h-[92vh] sm:max-h-[90vh] overflow-y-auto shadow-2xl">
         <div className="relative">
-          {trip.image ? (
-            <div className="relative h-[300px] w-full">
-              <Image src={trip.image} alt={trip.name} fill className="object-cover rounded-t-[18px]" sizes="680px" />
+          {trip.image && !imgError ? (
+            <div className="relative h-[240px] sm:h-[300px] w-full">
+              <Image src={trip.image} alt={trip.name} fill className="object-cover rounded-t-[18px]" sizes="680px" onError={() => setImgError(true)} />
               <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent rounded-t-[18px]" />
-              <div className="absolute bottom-4 left-6">
+              <div className="absolute bottom-4 left-4 sm:left-6">
                 <span className="bg-white/90 backdrop-blur-sm text-[#1a1a18] text-[12px] font-bold px-3 py-1 rounded-full">{trip.transport}</span>
               </div>
             </div>
           ) : (
-            <div className="h-[200px] w-full bg-gradient-to-br from-[#2d6a4f] to-[#40916c] rounded-t-[18px] flex items-center justify-center">
+            <div className="h-[160px] sm:h-[200px] w-full bg-gradient-to-br from-[#2d6a4f] to-[#40916c] rounded-t-[18px] flex items-center justify-center">
               <span className="text-white text-4xl font-bold">{trip.name}</span>
             </div>
           )}
@@ -36,8 +39,8 @@ export default function TripModal({ trip, open, onClose }) {
             {'\u2715'}
           </button>
         </div>
-        <div className="p-8">
-          <h2 className="text-[26px] font-bold tracking-tight mb-1">{trip.name}</h2>
+        <div className="p-4 sm:p-8">
+          <h2 className="text-[22px] sm:text-[26px] font-bold tracking-tight mb-1">{trip.name}</h2>
           <p className="text-sm text-[#6b6b66] mb-5">{trip.meta}</p>
           {trip.vibe && (
             <div className="bg-[#f0f9f4] border border-[#d4edda] rounded-xl p-4 mb-6">
@@ -65,16 +68,27 @@ export default function TripModal({ trip, open, onClose }) {
               </div>
             </div>
           )}
-          <div className="flex gap-3 flex-wrap">
+          <div className="flex gap-3 flex-wrap mb-6">
             {trip.website && (
               <a href={trip.website} target="_blank" rel="noopener noreferrer"
                 className="flex-1 py-3 px-5 bg-accent text-white rounded-[10px] text-sm font-semibold hover:bg-accent-hover transition-colors no-underline text-center min-w-[140px]">
                 Plan this trip {'\u2192'}
               </a>
             )}
-            <button className="py-3 px-5 bg-[#f0f0ec] text-[#1a1a18] rounded-[10px] text-sm font-semibold hover:bg-[#e8e8e4] transition-colors">
+            <button className="py-3 px-5 bg-[#f0f0ec] text-[#1a1a18] rounded-[10px] text-sm font-semibold hover:bg-[#e8e8e4] transition-colors cursor-pointer">
               Save {'\u2661'}
             </button>
+          </div>
+          <div className="border-t border-[#f0f0ec] pt-4 flex items-center justify-between">
+            <span className="text-xs text-[#6b6b66]">Was this helpful?</span>
+            <div className="flex gap-2">
+              <button onClick={() => setHelpful(true)} className={`px-3 py-1.5 rounded-lg text-sm transition-all cursor-pointer ${helpful === true ? 'bg-accent-light text-accent font-semibold' : 'bg-[#f0f0ec] text-[#6b6b66] hover:bg-[#e8e8e4]'}`}>
+                {'\uD83D\uDC4D'}
+              </button>
+              <button onClick={() => setHelpful(false)} className={`px-3 py-1.5 rounded-lg text-sm transition-all cursor-pointer ${helpful === false ? 'bg-red-50 text-red-500 font-semibold' : 'bg-[#f0f0ec] text-[#6b6b66] hover:bg-[#e8e8e4]'}`}>
+                {'\uD83D\uDC4E'}
+              </button>
+            </div>
           </div>
         </div>
       </div>

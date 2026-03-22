@@ -1,3 +1,5 @@
+'use client'
+import { useState } from 'react'
 import TripCard from '@/components/TripCard'
 import MapView from '@/components/MapView'
 import { trips } from '@/data/content'
@@ -80,10 +82,10 @@ const allTrips = [
 
 export default function TripsPage() {
   return (
-    <div className="max-w-6xl mx-auto px-8 py-12">
+    <div className="max-w-6xl mx-auto px-4 sm:px-8 py-12">
       <div className="mb-10">
-        <h1 className="text-[36px] font-bold tracking-tight mb-3">Weekend Escapes</h1>
-        <p className="text-[16px] text-[#6b6b66] max-w-[560px]">
+        <h1 className="text-[28px] sm:text-[36px] font-bold tracking-tight mb-3">Weekend Escapes</h1>
+        <p className="text-[15px] sm:text-[16px] text-[#6b6b66] max-w-[560px]">
           Singapore is your gateway to Southeast Asia. These are the best weekend trips you can do from the city.
         </p>
       </div>
@@ -92,25 +94,25 @@ export default function TripsPage() {
 
       <div className="mb-10">
         <h2 className="text-lg font-semibold mb-4 text-[#6b6b66] uppercase tracking-widest text-sm">{'\uD83D\uDEA4'} By Ferry (under 2h)</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {allTrips.filter(t => t.transport.includes('ferry')).map(t => <TripCard key={t.id} trip={t} />)}
         </div>
       </div>
       <div className="mb-10">
         <h2 className="text-lg font-semibold mb-4 text-[#6b6b66] uppercase tracking-widest text-sm">{'\uD83D\uDE97'} By Car / Bus</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {allTrips.filter(t => t.transport.includes('drive')).map(t => <TripCard key={t.id} trip={t} />)}
         </div>
       </div>
       <div className="mb-10">
         <h2 className="text-lg font-semibold mb-4 text-[#6b6b66] uppercase tracking-widest text-sm">{'\u2708\uFE0F'} By Plane</h2>
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {allTrips.filter(t => t.transport.includes('flight')).map(t => <TripCard key={t.id} trip={t} />)}
         </div>
       </div>
       <div className="p-4 bg-accent-light rounded-xl flex items-center gap-3">
         <span className="text-accent text-lg">{'\u2708\uFE0F'}</span>
-        <p className="text-sm text-accent font-medium">More destination guides coming soon \u2014 AI agent is working on it!</p>
+        <p className="text-sm text-accent font-medium">More destination guides coming soon {'\u2014'} AI agent is working on it!</p>
       </div>
     </div>
   )

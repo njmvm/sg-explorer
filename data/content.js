@@ -29,7 +29,7 @@ export const activities = [
     location: 'Buona Vista, Singapore', duration: '~2 hours', price: '~S$35/session',
     tags: ['Friends', 'Birthday', 'Competitive', 'Indoors', 'AC'],
     lat: 1.3068, lng: 103.7912,
-    website: 'https://www.kf1.com.sg',
+    website: 'https://kf1karting.com/',
   },
   {
     id: 'rooftop', slug: '1-altitude-rooftop', category: 'nightlife',
@@ -73,7 +73,7 @@ export const activities = [
     location: 'East Coast Park, Beach Area D', duration: 'Saturdays 9 AM', price: 'Free',
     tags: ['Free', 'Meet people', 'Weekend', 'Outdoors', 'All levels'],
     lat: 1.3005, lng: 103.9157,
-    website: 'https://www.meetup.com/sg-beach-volleyball/',
+    website: 'https://www.meetup.com/singapore-beach-volleyball-meetup-group/',
   },
   {
     id: 'hiking', slug: 'macritchie-treetop-walk', category: 'nature',
@@ -282,7 +282,7 @@ export const activities = [
     location: 'Multiple locations across Singapore', duration: '60\u201375 minutes', price: 'From S$35/person',
     tags: ['Groups', 'Puzzle', 'Indoor', 'Date night', 'Team building'],
     lat: 1.3003, lng: 103.8563,
-    website: 'https://www.lostsg.com',
+    website: 'https://lost.sg/',
   },
 ]
 
@@ -355,14 +355,14 @@ export const events = [
   },
   {
     id: 'e7', category: 'nightlife',
-    title: 'Laneway Festival Singapore 2026',
-    location: 'Bayfront Event Space', time: 'Gates open 11 AM',
-    date: { month: 'MAY', day: '16', label: 'Sat 16 May 2026' }, tab: 'month', price: 'From S$120',
-    image: 'https://images.unsplash.com/photo-1459749411175-04bf5292ceea?w=800&h=500&fit=crop&q=80',
-    fullDesc: "Laneway is Singapore's favourite indie music festival, running since 2011. Expect a lineup of emerging and established indie, electronic, and alternative artists across two stages. Headliners around 8 PM.",
-    tags: ['Festival', 'Music', 'Indie', 'All-day', 'Outdoor'],
-    lat: 1.2840, lng: 103.8610,
-    website: 'https://lanewayfestival.com/sg',
+    title: 'IVE \u2014 Show What I Have World Tour',
+    location: 'Singapore Indoor Stadium', time: '7:30 PM',
+    date: { month: 'MAY', day: '9', label: 'Sat 9 May 2026' }, tab: 'month', price: 'From S$118',
+    image: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=800&h=500&fit=crop&q=80',
+    fullDesc: 'Fourth-generation K-pop powerhouse IVE brings their Show What I Have World Tour to Singapore Indoor Stadium. Known for sleek choreography and anthemic pop hits including Eleven, Love Dive, After Like, and Kitsch, IVE are one of the fastest-rising acts in global K-pop. Expect a full production show with elaborate staging.',
+    tags: ['K-pop', 'Concert', 'Indoor Stadium', 'Dance', 'Live music'],
+    lat: 1.3007, lng: 103.8745,
+    website: 'https://www.sportshub.com.sg/events',
   },
   {
     id: 'r1', category: 'sports',
@@ -373,7 +373,7 @@ export const events = [
     fullDesc: 'A casual Saturday morning cycling group that meets at East Coast Park. The route covers about 15km along the coast. All levels welcome, pace is social. After the ride, the group heads to a nearby hawker centre for brunch.',
     tags: ['Cycling', 'Social', 'Morning', 'Free', 'All levels'],
     lat: 1.3005, lng: 103.9157,
-    website: 'https://www.meetup.com/singapore-cycling-group/',
+    website: 'https://www.meetup.com/topics/cycling/sg/',
   },
   {
     id: 'r2', category: 'social',
@@ -384,7 +384,7 @@ export const events = [
     fullDesc: 'Every Wednesday evening, a rotating group of tech workers, startup founders, and expats gathers at a different CBD bar for casual networking drinks. No agenda, no talks \u2014 just conversations over beers. Location announced each week on Telegram.',
     tags: ['Networking', 'Tech', 'Free', 'Social', 'CBD'],
     lat: 1.2847, lng: 103.8501,
-    website: 'https://www.meetup.com/singapore-tech-expat/',
+    website: 'https://www.meetup.com/topics/tech-networking/sg/',
   },
   {
     id: 'r3', category: 'sports',
@@ -406,7 +406,7 @@ export const events = [
     fullDesc: 'The Singapore Heritage Festival returns with free guided heritage walks, traditional street performances, and hands-on craft workshops across Chinatown and Kampong Glam. Sample heritage foods and browse artisan stalls celebrating Singapore\u2019s multicultural roots.',
     tags: ['Culture', 'Free', 'Heritage', 'Walking', 'Food'],
     lat: 1.2815, lng: 103.8454,
-    website: 'https://www.roots.gov.sg/nhb/singaporeheritagefestival',
+    website: 'https://www.sgheritagefest.gov.sg/',
   },
   {
     id: 'e9', category: 'food',
@@ -450,7 +450,7 @@ export const events = [
     fullDesc: 'ARTBOX \u2014 Asia\u2019s biggest creative lifestyle market \u2014 returns to Singapore in camping festival format. Over 450 vendors sell handmade crafts, vintage clothing, street food, and art prints across a neon-lit outdoor fairground. Live DJ stages, carnival games, and art installations fill the space across two weekends (Apr 3\u20135 and Apr 10\u201312).',
     tags: ['Festival', 'Creative', 'Night market', 'Food', 'Shopping'],
     lat: 1.3350, lng: 103.9609,
-    website: 'https://www.artbox.com.sg',
+    website: 'https://www.artbox.sg',
   },
   {
     id: 'e12', category: 'nightlife',
@@ -570,7 +570,7 @@ export const trips = [
       'Barelang Bridge \u2014 scenic photo spot connecting 6 islands',
     ],
     lat: 1.0456, lng: 104.0305,
-    website: 'https://www.batamfast.com',
+    website: 'https://visitbatam.com/',
   },
   {
     id: 'bintan', name: 'Bintan, Indonesia', meta: 'Resorts \u00B7 Kitesurfing \u00B7 Jungle',
@@ -588,7 +588,7 @@ export const trips = [
       'Trikora Beach \u2014 quiet, local beach on the east coast',
     ],
     lat: 1.0792, lng: 104.5326,
-    website: 'https://www.bintan-resort.com',
+    website: 'https://bintantourism.com/',
   },
   {
     id: 'johor', name: 'Johor Bahru, Malaysia', meta: 'Food \u00B7 Shopping \u00B7 Theme Parks',
@@ -678,7 +678,7 @@ export const trips = [
       'Sasak Village tour \u2014 visit a traditional Sasak community, learn about local weaving and architecture',
     ],
     lat: -8.6500, lng: 116.3242,
-    website: 'https://www.lombok-tourism.com',
+    website: 'https://www.indonesia.travel/gb/en/destinations/bali-nusa-tenggara/lombok',
   },
   {
     id: 'siem-reap', name: 'Siem Reap, Cambodia', meta: 'Temples \u00B7 History \u00B7 Night Market',
